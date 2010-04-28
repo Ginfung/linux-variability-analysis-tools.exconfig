@@ -19,3 +19,14 @@ linux-2.6.xx). To run the extractor:
 
     ./exconf-i386 [base Kconfig file (optional)]
 
+Compiling it
+------------
+
+If you want to compile the source code, you must copy the extractor source to
+the directory scripts/kconfig in a Linux kernel source tree. Overwrite the
+existing files in scripts/kconfig. Then run:
+
+    make exconfig
+ 
+ in the Kernel base directory. The current version of the extractor has been
+ compiled with the Linux 2.6.32 source tree.
