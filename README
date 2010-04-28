@@ -1,0 +1,21 @@
+Linux Variability Modeling Tools (LVAT) - Linux Kconfig Extractor
+Version 0.1
+
+Author: Steven She <shshe@uwaterloo.ca>
+Site:   https://code.google.com/p/linux-variability-analysis-tools/
+---
+
+The extractor is used to construct 'extract' files that are used by the LVAT
+tools.
+
+Running it
+----------
+
+A precompiled version for x86 (32-bit) is available under the bin/ directory.
+By default, the extractor will use arch/x86/Kconfig as the base Kconfig file.
+You can optionally provide an explicit base Kconfig file. The working
+directory MUST be the base directory of the Linux source files (i.e.
+linux-2.6.xx). To run the extractor:
+
+    ./exconf-i386 [base Kconfig file (optional)]
+
