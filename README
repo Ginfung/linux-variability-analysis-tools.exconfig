@@ -1,5 +1,5 @@
 Linux Variability Modeling Tools (LVAT) - Linux Kconfig Extractor
-Version 0.1
+Version 0.2
 
 Author: Steven She <shshe@uwaterloo.ca>
 Site:   https://code.google.com/p/linux-variability-analysis-tools/
@@ -30,3 +30,12 @@ existing files in scripts/kconfig. Then run:
  
  in the Kernel base directory. The current version of the extractor has been
  compiled with the Linux 2.6.32 source tree.
+
+Changes
+-------
+
+0.2
+
+- Support 'requires' statement used in old Kconfig specifications. The
+  'requires' keyword is treated the same as 'depends on'
+    - See http://www.mail-archive.com/kbuild-devel@lists.sourceforge.net/msg02447.html
