@@ -63,6 +63,7 @@ static struct menu *current_menu, *current_entry;
 %token <string> T_HELPTEXT
 %token <id>T_IF
 %token <id>T_ENDIF
+%token <id>T_REQUIRES
 %token <id>T_DEPENDS
 %token <id>T_OPTIONAL
 %token <id>T_PROMPT
@@ -421,6 +422,12 @@ depends: T_DEPENDS T_ON expr T_EOL
 	menu_add_dep($3);
 	printd(DEBUG_PARSE, "%s:%d:depends on\n", zconf_curname(), zconf_lineno());
 }
+	| T_REQUIRES expr T_EOL
+{
+    //shshe: Added for backwards compatibility!
+	menu_add_dep($2);
+	printd(DEBUG_PARSE, "%s:%d:depends\n", zconf_curname(), zconf_lineno());
+}
 	| T_DEPENDS expr T_EOL
 {
     //shshe: Added for backwards compatibility!
@@ -521,6 +528,7 @@ const char *zconf_tokenname(int token)
 	case T_IF:		return "if";
 	case T_ENDIF:		return "endif";
 	case T_DEPENDS:		return "depends";
+	case T_REQUIRES:    return "requires";
 	}
 	return "<token>";
 }
