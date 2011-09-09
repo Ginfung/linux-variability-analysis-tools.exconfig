@@ -1,0 +1,59 @@
+
+option java_outer_classname = "KconfigProtos";
+option java_package = "gsd.linux";
+
+message Node {
+    enum NodeType {
+        CONFIG = 0;
+        MENUCONFIG = 1;
+        MENU = 2;
+        CHOICE = 3;
+        IF = 4;
+        COMMENT = 5;
+        UNKNOWN = 6;
+    }
+    enum DataType {
+        BOOLEAN = 0;
+        TRISTATE = 1;
+        INT = 2;
+        HEX = 3;
+        STRING = 4;
+    }
+
+    required NodeType nodeType = 1;
+
+    // required for configs, optional for others
+    optional DataType dataType = 2;
+
+    // required for configs, optional for others
+    optional string id = 3;
+
+    optional string description = 4;
+
+    repeated PropertyProto property = 5;
+
+    optional string inherited = 6;
+
+    // Only used by choices
+    optional bool opt = 10;
+
+    // FIXME
+    repeated Node child = 100;
+}
+
+message PropertyProto {
+    enum PropertyType {
+        PROMPT = 0;
+        SELECT = 1;
+        DEFAULT = 2;
+        DEPENDS_ON = 3;
+        RANGE = 4;
+        ENV = 5;
+        UNKNOWN = 6;
+    }
+
+    required PropertyType propertyType = 1;
+    optional string value = 2;
+    optional string text = 3;
+    optional string visibleExpr = 4;
+}

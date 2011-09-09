@@ -2,13 +2,25 @@
 # Kernel configuration targets
 # These targets are used from top-level makefile
 
-PHONY += oldconfig xconfig gconfig menuconfig config silentoldconfig update-po-config exconfig
+PHONY += exdescconfig oldconfig xconfig gconfig menuconfig config silentoldconfig update-po-config 
+PHONY += exconfig testconfig 
+PHONY += protoconfig
+
+
+exdescconfig: $(obj)/exdesc
+	$< arch/$(SRCARCH)/Kconfig
+
+protoconfig: $(obj)/protoconf
+	$< arch/$(SRCARCH)/Kconfig
 
 exconfig: $(obj)/exconf
 	$< arch/$(SRCARCH)/Kconfig
 
 xconfig: $(obj)/qconf
 	$< arch/$(SRCARCH)/Kconfig
+
+testconfig: $(obj)/qconf
+	$< test/Kconfig
 
 gconfig: $(obj)/gconf
 	$< arch/$(SRCARCH)/Kconfig
@@ -118,13 +130,17 @@ conf-objs	:= conf.o  zconf.tab.o
 mconf-objs	:= mconf.o zconf.tab.o $(lxdialog)
 kxgettext-objs	:= kxgettext.o zconf.tab.o
 exconf-objs := exconf.o zconf.tab.o
+exdesc-objs := exdesc.o zconf.tab.o
 
-hostprogs-y := conf qconf gconf kxgettext exconf
+hostprogs-y := conf qconf gconf kxgettext exconf exdesc protoconf
 
 ifeq ($(MAKECMDGOALS),menuconfig)
 	hostprogs-y += mconf
 endif
 
+ifeq ($(MAKECMDGOALS),testconfig)
+	qconf-target := 1
+endif
 ifeq ($(MAKECMDGOALS),xconfig)
 	qconf-target := 1
 endif
@@ -132,6 +148,18 @@ ifeq ($(MAKECMDGOALS),gconfig)
 	gconf-target := 1
 endif
 
+ifeq ($(MAKECMDGOALS),protoconfig)
+	protoconf-target := 1
+endif
+
+ifeq ($(protoconf-target),1)
+	protoconf-cxxobjs := protoconf.o protobuf/extract.pb.o 
+	protoconf-objs := zconf.tab.o exconf_expr.o
+	HOSTCFLAGS += -g
+endif
+
+HOSTLOADLIBES_protoconf	= -ldl -lprotobuf
+HOSTCXXFLAGS_protoconf.o = -D LKC_DIRECT_LINK -g
 
 ifeq ($(qconf-target),1)
 qconf-cxxobjs	:= qconf.o
@@ -164,6 +192,10 @@ HOSTCXXFLAGS_qconf.o	= $(KC_QT_CFLAGS) -D LKC_DIRECT_LINK
 HOSTLOADLIBES_gconf	= `pkg-config --libs gtk+-2.0 gmodule-2.0 libglade-2.0`
 HOSTCFLAGS_gconf.o	= `pkg-config --cflags gtk+-2.0 gmodule-2.0 libglade-2.0` \
                           -D LKC_DIRECT_LINK
+
+# include debugging symbols
+HOSTCFLAGS_exconf.o = -g
+HOSTCFLAGS_exconf-desc.o = -g
 
 $(obj)/qconf.o: $(obj)/.tmp_qtcheck
 
